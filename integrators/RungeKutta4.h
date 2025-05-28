@@ -7,15 +7,15 @@ Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are
 met:
 
-    * Redistributions of source code must retain the above copyright
-      notice, this list of conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above
-      copyright notice, this list of conditions and the following
-      disclaimer in the documentation and/or other materials provided
-      with the distribution.
-    * Neither the name of the author nor the names of his contributors
-      may be used to endorse or promote products derived from this
-      software without specific prior written permission.
+	* Redistributions of source code must retain the above copyright
+	  notice, this list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above
+	  copyright notice, this list of conditions and the following
+	  disclaimer in the documentation and/or other materials provided
+	  with the distribution.
+	* Neither the name of the author nor the names of his contributors
+	  may be used to endorse or promote products derived from this
+	  software without specific prior written permission.
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
@@ -41,17 +41,16 @@ $Id: RungeKutta4.h 184 2007-06-04 11:26:12Z elferdo $
 #else
 #endif //__AVR_ARCH__
 
-
 class RungeKutta4
 {
 public:
 	template <typename TSystem>
-	static void step(TSystem &s, typename TSystem::precission_t h, typename TSystem::precission_t * const variables, typename TSystem::precission_t * const parameters)
+	static void step(TSystem &s, typename TSystem::precission_t h, typename TSystem::precission_t *const variables, typename TSystem::precission_t *const parameters)
 	{
 		using namespace std;
 
 #ifndef __AVR_ARCH__
-		boost::function_requires<SystemConcept<TSystem> >();
+		boost::function_requires<SystemConcept<TSystem>>();
 #endif //__AVR_ARCH__
 
 		typedef typename TSystem::precission_t vars_type[TSystem::n_variables];
@@ -63,25 +62,29 @@ public:
 
 		s.eval(variables, parameters, k[0]);
 
-		for (int i = 0; i < dim; ++i) {
+		for (int i = 0; i < dim; ++i)
+		{
 			apoyo[i] = variables[i] + k[0][i] * h / 2;
 		}
 
 		s.eval(apoyo, parameters, k[1]);
 
-		for (int i = 0; i < dim; ++i) {
+		for (int i = 0; i < dim; ++i)
+		{
 			apoyo[i] = variables[i] + k[1][i] * h / 2;
 		}
 
 		s.eval(apoyo, parameters, k[2]);
 
-		for (int i = 0; i < dim; ++i) {
+		for (int i = 0; i < dim; ++i)
+		{
 			apoyo[i] = variables[i] + k[2][i] * h;
 		}
 
 		s.eval(apoyo, parameters, k[3]);
 
-		for(int j = 0; j < dim; ++j){
+		for (int j = 0; j < dim; ++j)
+		{
 			variables[j] += h / 6 * (k[0][j] + 2 * k[1][j] + 2 * k[2][j] + k[3][j]);
 		}
 	}

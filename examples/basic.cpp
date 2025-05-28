@@ -40,7 +40,8 @@ typedef RungeKutta4 Integrator;
 typedef DifferentialNeuronWrapper<HodgkinHuxleyModel<double>, Integrator>
     Neuron;
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
   // Struct to initialize neuron model parameters
   Neuron::ConstructorArgs args;
 
@@ -67,7 +68,8 @@ int main(int argc, char **argv) {
 
   // Perform the simulation
   double simulation_time = 100;
-  for (double time = 0; time < simulation_time; time += step) {
+  for (double time = 0; time < simulation_time; time += step)
+  {
     n.step(step);
 
     printf("%f %f\n", time, n.get(Neuron::v));

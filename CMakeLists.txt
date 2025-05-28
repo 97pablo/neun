@@ -17,11 +17,16 @@ cmake_minimum_required(VERSION 2.8)
 
 include(FindPkgConfig)
 
+# Configure LibBoost
 FIND_PACKAGE(Boost 1.45 REQUIRED)
-
 include_directories(${Boost_INCLUDE_DIRS} include)
-	
 link_directories(${Boost_LIBRARY_DIRS})
+
+# Configure galib
+set(GALIB_LIB ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/galib/ga/libga.a)
+add_custom_target(galib COMMAND make lib
+	          WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/galib
+			   )
 
 add_subdirectory(include)
 add_subdirectory(integrators)
@@ -31,6 +36,7 @@ add_subdirectory(concepts)
 add_subdirectory(examples)
 add_subdirectory(models)
 add_subdirectory(wrappers)
+add_subdirectory(optimizers)
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "An efficient library to simulate neural networks in C++.")
 SET(CPACK_PACKAGE_VENDOR "Lareo and Herrero-Carrón")

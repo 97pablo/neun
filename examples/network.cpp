@@ -36,10 +36,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ElectricalSynapsis.h>
 #include <HodgkinHuxleyModel.h>
 #include <RungeKutta4.h>
+#include <NeuronNetwork.h>
+
+#include <AmplitudeObjective.h>
 
 typedef RungeKutta4 Integrator;
 typedef DifferentialNeuronWrapper<HodgkinHuxleyModel<double>, Integrator> HH;
 typedef ElectricalSynapsis<HH, HH> Synapsis;
+typedef NeuronNetwork<HH, Synapsis> Network;
+
+typedef AmplitudeObjective<Network> Objective;
+
+double input(double time, const Network &net)
+{
+  return 0.5;
+}
 
 int main(int argc, char **argv)
 {
@@ -64,25 +75,24 @@ int main(int argc, char **argv)
   // Initialize a synapsis between the neurons
   Synapsis s(h1, HH::v, h2, HH::v, -0.002, -0.002);
 
-  // Set the integration step
-  const double step = 0.001;
+  Network network;
+  network.add_neuron(&h1);
+  network.add_neuron(&h2);
+  network.add_synapsis(&s);
+  // network.add_synaptic_input(0.5, input);
+  // network.add_synaptic_input(0.5, input);
 
-  // Perform the simulation
-  double simulation_time = 100;
-  for (double time = 0; time < simulation_time; time += step)
-  {
-    s.step(step);
+  Objective::ConstructorArgs objectiveArgs;
+  objectiveArgs.params[Objective::time] = 100;
+  objectiveArgs.params[Objective::step] = 0.001;
+  objectiveArgs.params[Objective::peak_tolerance] = 0.3;
+  objectiveArgs.params[Objective::amplitude] = 44;
+  objectiveArgs.params[Objective::amp_tolerance] = 0.15;
+  objectiveArgs.params[Objective::n_peaks] = 5;
 
-    // Provide an external current input to both neurons
-    // h1.add_synaptic_input(0.5);
-    // h2.add_synaptic_input(0.5);
+  Objective objective(objectiveArgs);
 
-    h1.step(step);
-    h2.step(step);
-
-    printf("%f %f %f %f\n", time, h1.get(HH::v), h2.get(HH::v),
-           s.get(Synapsis::i1));
-  }
+  std::cout << objective.evaluate(network) << std::endl;
 
   return 0;
 }

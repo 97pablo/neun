@@ -5,6 +5,7 @@
 #include "DifferentialNeuronWrapper.h"
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 template <typename TNeuron>
 class VoltageDifferenceObjective
@@ -74,14 +75,14 @@ public:
     {
         const double step = this->params[parameter::step];
         const double time = this->params[parameter::time];
-        const std::size_t nSamples = static_cast<std::size_t>(time / step);
+        const int nSamples = static_cast<int>(time / step);
 
         double sqDiff = 0;
         for (int i = 0; i < nSamples; i++)
         {
             // calculate voltage difference for each point and aggregate in difference
             double voltage = n.get(Neuron::v);
-            double difference = std::abs(voltage - this->targetVoltages[i]);
+            double difference = std::fabs(voltage - this->targetVoltages[i]);
             sqDiff += difference * difference;
 
             n.step(step);

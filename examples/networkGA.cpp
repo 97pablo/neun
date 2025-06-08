@@ -35,89 +35,89 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <DifferentialNeuronWrapper.h>
 #include <HodgkinHuxleyModel.h>
 #include <RungeKutta4.h>
-#include <NeuronOptimizerWrapper.h>
-#include <OptimizationObjectiveWrapper.h>
 #include <DynamicalSystemLimiter.h>
 
-#include <VoltageDifferenceObjective.h>
-#include <NeuronGAOptimizer.h>
+#include <AmplitudeObjective.h>
+#include <ElectricalSynapsis.h>
+#include <NeuronNetwork.h>
+#include <NetworkGAOptimizer.h>
 
 #include <vector>
 
 typedef RungeKutta4 Integrator;
-typedef DifferentialNeuronWrapper<HodgkinHuxleyModel<float>, Integrator>
-    Neuron;
-typedef DynamicalSystemLimiter<Neuron> Limiter;
-typedef OptimizationObjectiveWrapper<VoltageDifferenceObjective<Neuron>> Objective;
-typedef NeuronOptimizerWrapper<NeuronGAOptimizer<Objective>> Optimizer;
+typedef DifferentialNeuronWrapper<HodgkinHuxleyModel<float>, Integrator> Neuron;
+typedef ElectricalSynapsis<Neuron, Neuron> Synapsis;
+typedef NeuronNetwork<Neuron, Synapsis> Network;
+
+typedef DynamicalSystemLimiter<Neuron> NeuronLimiter;
+typedef DynamicalSystemLimiter<Synapsis> SynapsisLimiter;
+typedef AmplitudeObjective<Network> Objective;
+typedef NetworkGAOptimizer<Objective> Optimizer;
 
 int main(int argc, char **argv)
 {
   // Initializes the patameters for the optimization objective
   Objective::ConstructorArgs objectiveArgs;
-  objectiveArgs.params[Objective::time] = 50;
+  objectiveArgs.params[Objective::time] = 100;
   objectiveArgs.params[Objective::step] = 0.001;
+  objectiveArgs.params[Objective::peak_tolerance] = 0.3;
+  objectiveArgs.params[Objective::amplitude] = 10;
+  objectiveArgs.params[Objective::amp_tolerance] = 0.15;
+  objectiveArgs.params[Objective::n_peaks] = 5;
   Objective objective(objectiveArgs);
 
   // Establishes bounds for the values of each parameter
-  Limiter limiter;
-  limiter.addLimits(Neuron::cm, 0.5, 2.0);
-  limiter.addLimits(Neuron::vna, 30.0, 70.0);
-  limiter.addLimits(Neuron::vk, -100.0, -60.0);
-  limiter.addLimits(Neuron::vl, -80.0, -40.0);
-  limiter.addLimits(Neuron::gna, 50.0, 300.0);
-  limiter.addLimits(Neuron::gk, 10.0, 100.0);
-  limiter.addLimits(Neuron::gl, 0.05, 1.0);
+  NeuronLimiter neuron_limiter;
+  neuron_limiter.addLimits(Neuron::cm, 0, 2.0);
+  neuron_limiter.addLimits(Neuron::vna, 30.0, 70.0);
+  neuron_limiter.addLimits(Neuron::vk, -100.0, -60.0);
+  neuron_limiter.addLimits(Neuron::vl, -80.0, -40.0);
+  neuron_limiter.addLimits(Neuron::gna, 0, 100.0);
+  neuron_limiter.addLimits(Neuron::gk, 0, 100.0);
+  neuron_limiter.addLimits(Neuron::gl, 0, 1.0);
 
-  limiter.addLimits(Neuron::v, -100.0, -20.0);
-  limiter.addLimits(Neuron::m, 0.0, 0.2);
-  limiter.addLimits(Neuron::n, 0.4, 0.8);
-  limiter.addLimits(Neuron::h, 0.0, 1.0);
+  neuron_limiter.addLimits(Neuron::v, -100.0, 5);
+  neuron_limiter.addLimits(Neuron::m, 0.0, 0.2);
+  neuron_limiter.addLimits(Neuron::n, 0.4, 0.8);
+  neuron_limiter.addLimits(Neuron::h, 0.0, 1.0);
+
+  SynapsisLimiter syn_limiter;
+  syn_limiter.addLimits(Synapsis::g1, -0.003, -0.001);
+  syn_limiter.addLimits(Synapsis::g2, -0.003, -0.001);
+  syn_limiter.addLimits(Synapsis::i1, 0, 0);
+  syn_limiter.addLimits(Synapsis::i1, 0, 0);
 
   // Initializes the paramters for the optimizer
   Optimizer::ConstructorArgs optimizerArgs;
   optimizerArgs.params[Optimizer::pConv] = 0.99;
-  optimizerArgs.params[Optimizer::pRepl] = 0.25;
-  optimizerArgs.params[Optimizer::popSize] = 1000;
-  optimizerArgs.params[Optimizer::pCross] = 0.4;
-  optimizerArgs.params[Optimizer::pMut] = 0.05;
+  optimizerArgs.params[Optimizer::pRepl] = 0.6;
+  optimizerArgs.params[Optimizer::popSize] = 500;
+  optimizerArgs.params[Optimizer::pCross] = 0.9;
+  optimizerArgs.params[Optimizer::pMut] = 0.15;
   optimizerArgs.params[Optimizer::nGens] = 500;
   optimizerArgs.params[Optimizer::nElite] = 1;
 
   // Creates the optimizer with the setup
-  Optimizer optimizer(optimizerArgs, objective, limiter);
+  Optimizer optimizer(optimizerArgs, objective, 12345);
+  auto n1 = optimizer.add_neuron(neuron_limiter);
+  auto n2 = optimizer.add_neuron(neuron_limiter);
+  optimizer.add_synapsis(n1, n2, syn_limiter);
 
   std::cout << "Optimizing neuron:\n";
-  Neuron optimizedNeuron = optimizer.generate();
+  Network optimizedNetwork = optimizer.generate();
 
-  std::cout << "Optimized Neuron Parameters:\n";
-  std::cout << "cm   = " << optimizedNeuron.get(Neuron::cm) << "\n";
-  std::cout << "vna  = " << optimizedNeuron.get(Neuron::vna) << "\n";
-  std::cout << "vk   = " << optimizedNeuron.get(Neuron::vk) << "\n";
-  std::cout << "vl   = " << optimizedNeuron.get(Neuron::vl) << "\n";
-  std::cout << "gna  = " << optimizedNeuron.get(Neuron::gna) << "\n";
-  std::cout << "gk   = " << optimizedNeuron.get(Neuron::gk) << "\n";
-  std::cout << "gl   = " << optimizedNeuron.get(Neuron::gl) << "\n";
+  std::ofstream data("example_network2.txt");
+  optimizedNetwork.simulate(100, 0.001, data);
 
-  std::cout << "\nNeuron State Variables:\n";
-  std::cout << "v = " << optimizedNeuron.get(Neuron::v) << "\n";
-  std::cout << "m = " << optimizedNeuron.get(Neuron::m) << "\n";
-  std::cout << "n = " << optimizedNeuron.get(Neuron::n) << "\n";
-  std::cout << "h = " << optimizedNeuron.get(Neuron::h) << "\n";
-
-  std::ofstream data("example2.txt");
-
-  // print results
-  const double step = 0.001;
-  double simulation_time = 100;
-  for (double time = 0; time < simulation_time; time += step)
+  for (Neuron *n : optimizedNetwork.get_neurons())
   {
-    optimizedNeuron.step(step);
-    double v = optimizedNeuron.get(Neuron::v);
-    data << time << ' ' << v << '\n';
+    delete n;
   }
 
-  data.close();
+  for (Synapsis *s : optimizedNetwork.get_synapsises())
+  {
+    delete s;
+  }
 
   return 0;
 }

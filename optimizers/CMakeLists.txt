@@ -16,6 +16,8 @@ install(FILES
     NeuronGAOptimizer.h
     VoltageDifferenceObjective.h
 	AmplitudeObjective.h
-    ParamLimiter.h
+    DynamicalSystemLimiter.h
+    NeuronNetwork.h
+    NetworkGAOptimizer.h
     DESTINATION ${PROJECT_NAME}/${PROJECT_VERSION}
 )

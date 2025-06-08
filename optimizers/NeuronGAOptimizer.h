@@ -9,7 +9,7 @@
 #include <ga/GARealGenome.h>
 #include <ga/ga.h>
 #include <ga/std_stream.h>
-#include <ParamLimiter.h>
+#include <DynamicalSystemLimiter.h>
 
 void printStats(GAGeneticAlgorithm &ga, unsigned int steps)
 {
@@ -31,7 +31,7 @@ class NeuronGAOptimizer
 public:
     typedef TObjective Objective;
     typedef typename Objective::Neuron Neuron;
-    typedef ParamLimiter<Neuron> Limiter;
+    typedef DynamicalSystemLimiter<Neuron> Limiter;
 
     enum parameter
     {

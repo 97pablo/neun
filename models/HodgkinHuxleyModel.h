@@ -1,7 +1,7 @@
 /*************************************************************
 
 Copyright (c) 2006, Fernando Herrero Carrón
-              2016, Ángel Lareo Fernández
+			  2016, Ángel Lareo Fernández
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -56,11 +56,27 @@ class HodgkinHuxleyModel : public NeuronBase<Precission>
 public:
 	typedef Precission precission_t;
 
-	enum variable {v, h, m, n, n_variables};
-	enum parameter {cm, vna, vk, vl, gna, gk, gl, n_parameters};
+	enum variable
+	{
+		v,
+		h,
+		m,
+		n,
+		n_variables
+	};
+	enum parameter
+	{
+		cm,
+		vna,
+		vk,
+		vl,
+		gna,
+		gk,
+		gl,
+		n_parameters
+	};
 
 protected:
-
 	Precission alpha_h(Precission v) const
 	{
 		return 0.07 * exp((-v - 65) / 20);
@@ -73,7 +89,7 @@ protected:
 
 	Precission alpha_m(Precission v) const
 	{
-		return (0.1 * (-v - 40))/(exp((-v - 40) / 10) - 1);
+		return (0.1 * (-v - 40)) / (exp((-v - 40) / 10) - 1);
 	}
 
 	Precission beta_m(Precission v) const
@@ -95,18 +111,21 @@ protected:
 	Precission m_parameters[n_parameters];
 
 public:
-
-  struct ConstructorArgs
+	struct ConstructorArgs
 	{
-	    Precission params[n_parameters];
+		Precission params[n_parameters];
 	};
 
-  HodgkinHuxleyModel(ConstructorArgs const &args)
-  {
-    std::copy(args.params, args.params + n_parameters, m_parameters);
-  }
+	HodgkinHuxleyModel(ConstructorArgs const &args)
+	{
+		// zero fill to avoid uninitialized values
+		std::fill(m_variables, m_variables + n_variables, 0);
+		std::fill(m_parameters, m_parameters + n_parameters, 0);
 
-	void eval(const Precission * const vars, Precission * const params, Precission * const incs) const
+		std::copy(args.params, args.params + n_parameters, m_parameters);
+	}
+
+	void eval(const Precission *const vars, Precission *const params, Precission *const incs) const
 	{
 		incs[m] = alpha_m(vars[v]) * (1 - vars[m]) - beta_m(vars[v]) * vars[m];
 		incs[h] = alpha_h(vars[v]) * (1 - vars[h]) - beta_h(vars[v]) * vars[h];

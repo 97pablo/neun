@@ -1,14 +1,14 @@
-#ifndef PARAM_LIMITER_H_
-#define PARAM_LIMITER_H_
+#ifndef NEURON_PARAM_LIMITER_H_
+#define NEURON_PARAM_LIMITER_H_
 
 template <typename Neuron>
-class ParamLimiter
+class DynamicalSystemLimiter
 {
 public:
     typedef typename Neuron::variable variable;
     typedef typename Neuron::parameter parameter;
 
-    ParamLimiter()
+    DynamicalSystemLimiter()
     {
         for (int i = 0; i < parameter::n_parameters; ++i)
         {

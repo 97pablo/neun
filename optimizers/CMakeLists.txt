@@ -18,6 +18,7 @@ install(FILES
 	AmplitudeObjective.h
     DynamicalSystemLimiter.h
     NeuronNetwork.h
+    NetworkBlueprint.h
     NetworkGAOptimizer.h
     DESTINATION ${PROJECT_NAME}/${PROJECT_VERSION}
 )

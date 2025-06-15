@@ -41,6 +41,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <ElectricalSynapsis.h>
 #include <NeuronNetwork.h>
 #include <NetworkGAOptimizer.h>
+#include <NetworkBlueprint.h>
 
 #include <vector>
 
@@ -49,10 +50,11 @@ typedef DifferentialNeuronWrapper<HodgkinHuxleyModel<float>, Integrator> Neuron;
 typedef ElectricalSynapsis<Neuron, Neuron> Synapsis;
 typedef NeuronNetwork<Neuron, Synapsis> Network;
 
-typedef DynamicalSystemLimiter<Neuron> NeuronLimiter;
-typedef DynamicalSystemLimiter<Synapsis> SynapsisLimiter;
 typedef AmplitudeObjective<Network> Objective;
 typedef NetworkGAOptimizer<Objective> Optimizer;
+typedef Optimizer::Blueprint Blueprint;
+typedef Blueprint::NeuronLimiter NeuronLimiter;
+typedef Blueprint::SynapsisLimiter SynapsisLimiter;
 
 int main(int argc, char **argv)
 {
@@ -61,9 +63,12 @@ int main(int argc, char **argv)
   objectiveArgs.params[Objective::time] = 100;
   objectiveArgs.params[Objective::step] = 0.001;
   objectiveArgs.params[Objective::peak_tolerance] = 0.3;
-  objectiveArgs.params[Objective::amplitude] = 10;
-  objectiveArgs.params[Objective::amp_tolerance] = 0.15;
-  objectiveArgs.params[Objective::n_peaks] = 5;
+  objectiveArgs.params[Objective::amplitude] = 20;
+  objectiveArgs.params[Objective::amp_tolerance] = 0.1;
+  objectiveArgs.params[Objective::n_peaks] = 3;
+  objectiveArgs.params[Objective::interval_pre] = 5;
+  objectiveArgs.params[Objective::interval_post] = 15;
+  objectiveArgs.params[Objective::int_tolerance] = 0.1;
   Objective objective(objectiveArgs);
 
   // Establishes bounds for the values of each parameter
@@ -82,29 +87,34 @@ int main(int argc, char **argv)
   neuron_limiter.addLimits(Neuron::h, 0.0, 1.0);
 
   SynapsisLimiter syn_limiter;
-  syn_limiter.addLimits(Synapsis::g1, -0.003, -0.001);
-  syn_limiter.addLimits(Synapsis::g2, -0.003, -0.001);
+  syn_limiter.addLimits(Synapsis::g1, -1, 0);
+  syn_limiter.addLimits(Synapsis::g2, -1, 0);
   syn_limiter.addLimits(Synapsis::i1, 0, 0);
   syn_limiter.addLimits(Synapsis::i1, 0, 0);
 
   // Initializes the paramters for the optimizer
   Optimizer::ConstructorArgs optimizerArgs;
   optimizerArgs.params[Optimizer::pConv] = 0.99;
-  optimizerArgs.params[Optimizer::pRepl] = 0.6;
-  optimizerArgs.params[Optimizer::popSize] = 500;
+  optimizerArgs.params[Optimizer::pRepl] = 0.9;
+  optimizerArgs.params[Optimizer::popSize] = 1000;
   optimizerArgs.params[Optimizer::pCross] = 0.9;
   optimizerArgs.params[Optimizer::pMut] = 0.15;
   optimizerArgs.params[Optimizer::nGens] = 500;
-  optimizerArgs.params[Optimizer::nElite] = 1;
+
+  Blueprint blueprint;
+
+  auto n1 = blueprint.add_neuron(neuron_limiter);
+  auto n2 = blueprint.add_neuron(neuron_limiter);
+  blueprint.add_synapsis(n1, n2, syn_limiter);
 
   // Creates the optimizer with the setup
-  Optimizer optimizer(optimizerArgs, objective, 12345);
-  auto n1 = optimizer.add_neuron(neuron_limiter);
-  auto n2 = optimizer.add_neuron(neuron_limiter);
-  optimizer.add_synapsis(n1, n2, syn_limiter);
+  Optimizer optimizer(optimizerArgs, objective, blueprint, 12345);
 
   std::cout << "Optimizing neuron:\n";
   Network optimizedNetwork = optimizer.generate();
+
+  std::cout << "Final fitness:\n"
+            << objective.evaluate(optimizedNetwork) << std::endl;
 
   std::ofstream data("example_network2.txt");
   optimizedNetwork.simulate(100, 0.001, data);
@@ -114,7 +124,7 @@ int main(int argc, char **argv)
     delete n;
   }
 
-  for (Synapsis *s : optimizedNetwork.get_synapsises())
+  for (Synapsis *s : optimizedNetwork.get_synapses())
   {
     delete s;
   }

@@ -14,7 +14,7 @@ public:
 
 private:
     std::vector<Neuron *> neurons;
-    std::vector<Synapsis *> synapsises;
+    std::vector<Synapsis *> synapses;
 
     // External input is stored as functions, that allows behabiors like
     // a ramping voltage, or a fixed voltage from a specific point in time
@@ -44,7 +44,7 @@ public:
      */
     int add_synapsis(Synapsis *s)
     {
-        synapsises.push_back(s);
+        synapses.push_back(s);
         return neurons.size() - 1;
     }
 
@@ -65,9 +65,9 @@ public:
         return neurons;
     }
 
-    std::vector<Synapsis *> get_synapsises()
+    std::vector<Synapsis *> get_synapses()
     {
-        return synapsises;
+        return synapses;
     }
 
     std::vector<std::function<double(double, const NeuronNetwork<Neuron, Synapsis> &)>> get_inputs(int neuron_id)
@@ -82,7 +82,7 @@ public:
 
     Synapsis *get_synapsis(int synapsis_id)
     {
-        return synapsises[synapsis_id];
+        return synapses[synapsis_id];
     }
 
     /**
@@ -93,7 +93,7 @@ public:
     void step(double step)
     {
         // simulate synapsis
-        for (Synapsis *s : synapsises)
+        for (Synapsis *s : synapses)
         {
             s->step(step);
         }
@@ -105,8 +105,7 @@ public:
             // simulate inputs
             for (auto input_func : inputs[i])
             {
-                double input_value = input_func(step, *this);
-                n->add_synaptic_input(input_value);
+                n->add_synaptic_input(input_func(step, *this));
             }
 
             // simulate neuron
@@ -134,7 +133,7 @@ public:
             {
                 out << n->get(Neuron::v) << " ";
             }
-            for (const Synapsis *s : synapsises)
+            for (const Synapsis *s : synapses)
             {
                 out << s->get(Synapsis::i1) << " ";
             }

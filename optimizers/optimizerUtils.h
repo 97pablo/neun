@@ -52,4 +52,17 @@ std::vector<int> detect_peaks(std::vector<double> &voltages, double tolerance)
     return refinedPeaks;
 }
 
+double gaussian_reward(double expected, double obtained, double sigma)
+{
+    double z = (expected - obtained) / sigma;
+    return std::exp(-0.5 * z * z);
+}
+
+double smooth_square_error(double expected, double obtained)
+{
+    double difference = (expected - obtained);
+    double error = difference * difference;
+    return 1 / (1 + error);
+}
+
 #endif // OPTIMIZER_UTLIS_H_

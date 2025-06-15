@@ -88,6 +88,7 @@ public:
             n.step(step);
         }
 
+        sqDiff /= nSamples;
         // this line is needed to minimize difference, instead of maximizing it
         double fitness = 1.0 / (1.0 + sqDiff);
         return std::max(1e-9, fitness);

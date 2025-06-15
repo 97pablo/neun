@@ -105,7 +105,7 @@ int main(int argc, char **argv)
   std::cout << "n = " << optimizedNeuron.get(Neuron::n) << "\n";
   std::cout << "h = " << optimizedNeuron.get(Neuron::h) << "\n";
 
-  std::ofstream data("example2.txt");
+  std::ofstream data(".txt");
 
   // print results
   const double step = 0.001;

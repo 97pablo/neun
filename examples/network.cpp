@@ -79,25 +79,9 @@ int main(int argc, char **argv)
   network.add_neuron(&h1);
   network.add_neuron(&h2);
   network.add_synapsis(&s);
-  // network.add_synaptic_input(0.5, input);
-  // network.add_synaptic_input(0.5, input);
+  network.add_synaptic_input(0, input);
+  network.add_synaptic_input(1, input);
 
-  // network.simulate(100, 0.0001, std::cout);
-
-  Objective::ConstructorArgs objectiveArgs;
-  objectiveArgs.params[Objective::time] = 100;
-  objectiveArgs.params[Objective::step] = 0.001;
-  objectiveArgs.params[Objective::peak_tolerance] = 0.1;
-  objectiveArgs.params[Objective::amplitude] = 44;
-  objectiveArgs.params[Objective::amp_tolerance] = 0.15;
-  objectiveArgs.params[Objective::n_peaks] = 5;
-  objectiveArgs.params[Objective::interval_pre] = 9.5;
-  objectiveArgs.params[Objective::interval_post] = 9.5;
-  objectiveArgs.params[Objective::int_tolerance] = 0.30;
-
-  Objective objective(objectiveArgs);
-
-  std::cout << objective.evaluate(network) << std::endl;
-
+  network.simulate(100, 0.0001, std::cout, HH::v, Synapsis::i1);
   return 0;
 }

@@ -1,0 +1,310 @@
+[Generation 1]
+  Best Fitness:    0.19797
+  Average Fitness: 0.044629
+  Worst Fitness:   0
+  Std Dev:         0.0517843
+[Generation 2]
+  Best Fitness:    0.19797
+  Average Fitness: 0.0641633
+  Worst Fitness:   0.0333333
+  Std Dev:         0.0525316
+[Generation 3]
+  Best Fitness:    0.19797
+  Average Fitness: 0.073867
+  Worst Fitness:   0.0333333
+  Std Dev:         0.0561943
+[Generation 4]
+  Best Fitness:    0.254455
+  Average Fitness: 0.101284
+  Worst Fitness:   0.0333333
+  Std Dev:         0.0636918
+[Generation 5]
+  Best Fitness:    0.254455
+  Average Fitness: 0.133391
+  Worst Fitness:   0.0495247
+  Std Dev:         0.0521199
+[Generation 6]
+  Best Fitness:    0.474894
+  Average Fitness: 0.17963
+  Worst Fitness:   0.101678
+  Std Dev:         0.0639974
+[Generation 7]
+  Best Fitness:    0.474894
+  Average Fitness: 0.192174
+  Worst Fitness:   0.166667
+  Std Dev:         0.0592014
+[Generation 8]
+  Best Fitness:    0.474894
+  Average Fitness: 0.199179
+  Worst Fitness:   0.166667
+  Std Dev:         0.0704824
+[Generation 9]
+  Best Fitness:    0.474894
+  Average Fitness: 0.216974
+  Worst Fitness:   0.166903
+  Std Dev:         0.0791013
+[Generation 10]
+  Best Fitness:    0.474894
+  Average Fitness: 0.224695
+  Worst Fitness:   0.168986
+  Std Dev:         0.0814114
+[Generation 11]
+  Best Fitness:    0.474894
+  Average Fitness: 0.234996
+  Worst Fitness:   0.178293
+  Std Dev:         0.0813186
+[Generation 12]
+  Best Fitness:    0.474894
+  Average Fitness: 0.236512
+  Worst Fitness:   0.180503
+  Std Dev:         0.0803996
+[Generation 13]
+  Best Fitness:    0.474894
+  Average Fitness: 0.247134
+  Worst Fitness:   0.184491
+  Std Dev:         0.0787718
+[Generation 14]
+  Best Fitness:    0.474894
+  Average Fitness: 0.257212
+  Worst Fitness:   0.190039
+  Std Dev:         0.0760707
+[Generation 15]
+  Best Fitness:    0.474894
+  Average Fitness: 0.271702
+  Worst Fitness:   0.193994
+  Std Dev:         0.0791802
+[Generation 16]
+  Best Fitness:    0.474894
+  Average Fitness: 0.297633
+  Worst Fitness:   0.202157
+  Std Dev:         0.0714121
+[Generation 17]
+  Best Fitness:    0.474894
+  Average Fitness: 0.314995
+  Worst Fitness:   0.232453
+  Std Dev:         0.0649101
+[Generation 18]
+  Best Fitness:    0.474894
+  Average Fitness: 0.329838
+  Worst Fitness:   0.24669
+  Std Dev:         0.0609514
+[Generation 19]
+  Best Fitness:    0.493196
+  Average Fitness: 0.347522
+  Worst Fitness:   0.290965
+  Std Dev:         0.0554561
+[Generation 20]
+  Best Fitness:    0.493196
+  Average Fitness: 0.362662
+  Worst Fitness:   0.30086
+  Std Dev:         0.0557995
+[Generation 21]
+  Best Fitness:    0.602499
+  Average Fitness: 0.396836
+  Worst Fitness:   0.310549
+  Std Dev:         0.0629424
+[Generation 22]
+  Best Fitness:    0.615275
+  Average Fitness: 0.43284
+  Worst Fitness:   0.361202
+  Std Dev:         0.060076
+[Generation 23]
+  Best Fitness:    0.615275
+  Average Fitness: 0.456564
+  Worst Fitness:   0.390804
+  Std Dev:         0.0600621
+[Generation 24]
+  Best Fitness:    0.615275
+  Average Fitness: 0.470621
+  Worst Fitness:   0.405939
+  Std Dev:         0.0578716
+[Generation 25]
+  Best Fitness:    0.615275
+  Average Fitness: 0.486409
+  Worst Fitness:   0.418573
+  Std Dev:         0.0552796
+[Generation 26]
+  Best Fitness:    0.615275
+  Average Fitness: 0.504968
+  Worst Fitness:   0.442417
+  Std Dev:         0.0502064
+[Generation 27]
+  Best Fitness:    0.717397
+  Average Fitness: 0.519017
+  Worst Fitness:   0.451877
+  Std Dev:         0.0586877
+[Generation 28]
+  Best Fitness:    0.717397
+  Average Fitness: 0.534749
+  Worst Fitness:   0.464799
+  Std Dev:         0.0560961
+[Generation 29]
+  Best Fitness:    0.717397
+  Average Fitness: 0.549037
+  Worst Fitness:   0.474894
+  Std Dev:         0.0527735
+[Generation 30]
+  Best Fitness:    0.717397
+  Average Fitness: 0.556588
+  Worst Fitness:   0.497595
+  Std Dev:         0.0483325
+[Generation 31]
+  Best Fitness:    0.717397
+  Average Fitness: 0.567146
+  Worst Fitness:   0.510246
+  Std Dev:         0.0450269
+[Generation 32]
+  Best Fitness:    0.717397
+  Average Fitness: 0.585878
+  Worst Fitness:   0.525092
+  Std Dev:         0.0458213
+[Generation 33]
+  Best Fitness:    0.717397
+  Average Fitness: 0.597713
+  Worst Fitness:   0.539143
+  Std Dev:         0.0408113
+[Generation 34]
+  Best Fitness:    0.727783
+  Average Fitness: 0.616858
+  Worst Fitness:   0.567083
+  Std Dev:         0.0384116
+[Generation 35]
+  Best Fitness:    0.727783
+  Average Fitness: 0.633165
+  Worst Fitness:   0.58782
+  Std Dev:         0.0369424
+[Generation 36]
+  Best Fitness:    0.727783
+  Average Fitness: 0.64665
+  Worst Fitness:   0.601786
+  Std Dev:         0.0348149
+[Generation 37]
+  Best Fitness:    0.727783
+  Average Fitness: 0.658786
+  Worst Fitness:   0.61665
+  Std Dev:         0.0321872
+[Generation 38]
+  Best Fitness:    0.73495
+  Average Fitness: 0.666868
+  Worst Fitness:   0.625765
+  Std Dev:         0.0313167
+[Generation 39]
+  Best Fitness:    0.73495
+  Average Fitness: 0.671883
+  Worst Fitness:   0.634201
+  Std Dev:         0.0290582
+[Generation 40]
+  Best Fitness:    0.776492
+  Average Fitness: 0.685325
+  Worst Fitness:   0.651565
+  Std Dev:         0.0264592
+[Generation 41]
+  Best Fitness:    0.776492
+  Average Fitness: 0.694113
+  Worst Fitness:   0.665363
+  Std Dev:         0.0241204
+[Generation 42]
+  Best Fitness:    0.776492
+  Average Fitness: 0.702447
+  Worst Fitness:   0.670851
+  Std Dev:         0.0243062
+[Generation 43]
+  Best Fitness:    0.783898
+  Average Fitness: 0.709555
+  Worst Fitness:   0.677247
+  Std Dev:         0.0243361
+[Generation 44]
+  Best Fitness:    0.783898
+  Average Fitness: 0.717281
+  Worst Fitness:   0.684305
+  Std Dev:         0.0228563
+[Generation 45]
+  Best Fitness:    0.783898
+  Average Fitness: 0.720657
+  Worst Fitness:   0.692946
+  Std Dev:         0.0212675
+[Generation 46]
+  Best Fitness:    0.783898
+  Average Fitness: 0.725797
+  Worst Fitness:   0.699004
+  Std Dev:         0.0214869
+[Generation 47]
+  Best Fitness:    0.783898
+  Average Fitness: 0.728451
+  Worst Fitness:   0.704493
+  Std Dev:         0.0215899
+[Generation 48]
+  Best Fitness:    0.783898
+  Average Fitness: 0.73106
+  Worst Fitness:   0.708125
+  Std Dev:         0.0210463
+[Generation 49]
+  Best Fitness:    0.783898
+  Average Fitness: 0.73549
+  Worst Fitness:   0.715771
+  Std Dev:         0.0196581
+[Generation 50]
+  Best Fitness:    0.784053
+  Average Fitness: 0.742013
+  Worst Fitness:   0.719234
+  Std Dev:         0.0198258
+[Generation 51]
+  Best Fitness:    0.784053
+  Average Fitness: 0.745582
+  Worst Fitness:   0.721921
+  Std Dev:         0.0190507
+[Generation 52]
+  Best Fitness:    0.784053
+  Average Fitness: 0.747957
+  Worst Fitness:   0.725111
+  Std Dev:         0.0175678
+[Generation 53]
+  Best Fitness:    0.789808
+  Average Fitness: 0.753337
+  Worst Fitness:   0.73025
+  Std Dev:         0.0167811
+[Generation 54]
+  Best Fitness:    0.789874
+  Average Fitness: 0.757543
+  Worst Fitness:   0.738619
+  Std Dev:         0.0155146
+[Generation 55]
+  Best Fitness:    0.79004
+  Average Fitness: 0.759832
+  Worst Fitness:   0.741424
+  Std Dev:         0.0153095
+[Generation 56]
+  Best Fitness:    0.79004
+  Average Fitness: 0.762125
+  Worst Fitness:   0.744138
+  Std Dev:         0.0143529
+[Generation 57]
+  Best Fitness:    0.79004
+  Average Fitness: 0.763666
+  Worst Fitness:   0.745464
+  Std Dev:         0.0141747
+[Generation 58]
+  Best Fitness:    0.79004
+  Average Fitness: 0.764622
+  Worst Fitness:   0.746331
+  Std Dev:         0.0142884
+[Generation 59]
+  Best Fitness:    0.79004
+  Average Fitness: 0.76653
+  Worst Fitness:   0.748188
+  Std Dev:         0.0133602
+[Generation 60]
+  Best Fitness:    0.79004
+  Average Fitness: 0.768724
+  Worst Fitness:   0.750008
+  Std Dev:         0.012415
+[Generation 61]
+  Best Fitness:    0.79004
+  Average Fitness: 0.772888
+  Worst Fitness:   0.754597
+  Std Dev:         0.0111945
+[Generation 62]
+  Best Fitness:    0.79146
+  Average Fitness: 0.775731
+  Worst Fitness:   0.760054
+  Std Dev:         0.00906897

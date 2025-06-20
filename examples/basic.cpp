@@ -35,6 +35,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <DifferentialNeuronWrapper.h>
 #include <HodgkinHuxleyModel.h>
 #include <RungeKutta4.h>
+#include <iostream>
 
 typedef RungeKutta4 Integrator;
 typedef DifferentialNeuronWrapper<HodgkinHuxleyModel<double>, Integrator>
@@ -63,6 +64,22 @@ int main(int argc, char **argv)
   n.set(Neuron::n, 0.7);
   n.set(Neuron::h, 0.01);
 
+  std::cout << "Optimized Neuron Parameters:\n";
+  std::cout << "cm   = " << n.get(Neuron::cm) << "\n";
+  std::cout << "vna  = " << n.get(Neuron::vna) << "\n";
+  std::cout << "vk   = " << n.get(Neuron::vk) << "\n";
+  std::cout << "vl   = " << n.get(Neuron::vl) << "\n";
+  std::cout << "gna  = " << n.get(Neuron::gna) << "\n";
+  std::cout << "gk   = " << n.get(Neuron::gk) << "\n";
+  std::cout << "gl   = " << n.get(Neuron::gl) << "\n";
+
+  std::cout << "\nNeuron State Variables:\n";
+  std::cout << "v = " << n.get(Neuron::v) << "\n";
+  std::cout << "m = " << n.get(Neuron::m) << "\n";
+  std::cout << "n = " << n.get(Neuron::n) << "\n";
+  std::cout << "h = " << n.get(Neuron::h) << "\n";
+
+  /*
   // Set the integration step
   const double step = 0.001;
 
@@ -73,7 +90,7 @@ int main(int argc, char **argv)
     n.step(step);
 
     printf("%f %f\n", time, n.get(Neuron::v));
-  }
+  }*/
 
   return 0;
 }

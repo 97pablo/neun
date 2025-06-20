@@ -13,5 +13,8 @@ target_link_libraries(network)
 add_executable(basicGA basicGA.cpp)
 target_link_libraries(basicGA PRIVATE ${GALIB_LIB})
 
+add_executable(modelGA modelGA.cpp)
+target_link_libraries(modelGA PRIVATE ${GALIB_LIB})
+
 add_executable(networkGA networkGA.cpp)
 target_link_libraries(networkGA PRIVATE ${GALIB_LIB})

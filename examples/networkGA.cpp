@@ -63,13 +63,13 @@ int main(int argc, char **argv)
   objectiveArgs.params[Objective::time] = 100;
   objectiveArgs.params[Objective::step] = 0.001;
   objectiveArgs.params[Objective::peak_tolerance] = 0.3;
-  objectiveArgs.params[Objective::amplitude] = 20;
-  objectiveArgs.params[Objective::amp_tolerance] = 0.1;
-  objectiveArgs.params[Objective::n_peaks] = 3;
+  objectiveArgs.params[Objective::amplitude] = 5;
+  objectiveArgs.params[Objective::amp_tolerance] = 0.3;
+  objectiveArgs.params[Objective::n_peaks] = 5;
   objectiveArgs.params[Objective::interval_pre] = 5;
   objectiveArgs.params[Objective::interval_post] = 15;
   objectiveArgs.params[Objective::int_tolerance] = 0.1;
-  Objective objective(objectiveArgs);
+  Objective objective(objectiveArgs, Neuron::v);
 
   // Establishes bounds for the values of each parameter
   NeuronLimiter neuron_limiter;
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 
   auto n1 = blueprint.add_neuron(neuron_limiter);
   auto n2 = blueprint.add_neuron(neuron_limiter);
-  blueprint.add_synapsis(n1, n2, syn_limiter);
+  blueprint.add_synapsis(n1, Neuron::v, n2, Neuron::v, syn_limiter);
 
   // Creates the optimizer with the setup
   Optimizer optimizer(optimizerArgs, objective, blueprint, 12345);
@@ -113,11 +113,12 @@ int main(int argc, char **argv)
   std::cout << "Optimizing neuron:\n";
   Network optimizedNetwork = optimizer.generate();
 
+  std::cout << "Evaluating Neuron" << std::endl;
   std::cout << "Final fitness:\n"
             << objective.evaluate(optimizedNetwork) << std::endl;
 
-  std::ofstream data("example_network2.txt");
-  optimizedNetwork.simulate(100, 0.001, data);
+  // std::ofstream data("example_network2.txt");
+  //  optimizedNetwork.simulate(100, 0.001, data);
 
   for (Neuron *n : optimizedNetwork.get_neurons())
   {

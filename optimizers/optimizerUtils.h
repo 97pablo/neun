@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <numeric>
+#include <iostream>
 
 std::vector<int> detect_peaks(std::vector<double> &voltages, double tolerance)
 {
@@ -11,6 +12,8 @@ std::vector<int> detect_peaks(std::vector<double> &voltages, double tolerance)
     double runningMin = voltages[0];
     std::vector<double> leftMins;
     std::vector<double> rightMins;
+    double globalMin = voltages[0];
+    double globalMax = voltages[0];
 
     // finds local maximums
     std::vector<int> peaks;
@@ -19,6 +22,10 @@ std::vector<int> detect_peaks(std::vector<double> &voltages, double tolerance)
         double prev = voltages[i - 1];
         double curr = voltages[i];
         double next = voltages[i + 1];
+
+        // find global range
+        globalMax = std::max(globalMax, curr);
+        globalMin = std::min(globalMin, curr);
 
         runningMin = std::min(runningMin, curr);
         if (curr > prev && curr > next)
@@ -35,15 +42,17 @@ std::vector<int> detect_peaks(std::vector<double> &voltages, double tolerance)
     }
     rightMins.push_back(runningMin);
 
+    const double global_range = globalMax - globalMin;
+    const double minProminence = tolerance * global_range;
+
     // finds peaks that have a prominence above the threshold
     std::vector<int> refinedPeaks;
-
     for (size_t i = 0; i < peaks.size(); i++)
     {
         double curr = voltages[peaks[i]];
         double prominence = curr - std::max(leftMins[i], rightMins[i]);
 
-        if (prominence > tolerance * std::fabs(curr))
+        if (prominence > minProminence)
         {
             refinedPeaks.push_back(peaks[i]);
         }

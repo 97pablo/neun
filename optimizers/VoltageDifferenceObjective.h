@@ -6,16 +6,25 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <limits>
+#include <optimizerUtils.h>
 
-template <typename TNeuron>
+#define TOLERANCE 0.3
+
+template <typename TNetwork>
 class VoltageDifferenceObjective
 {
 public:
-    typedef TNeuron Neuron;
+    typedef TNetwork Network;
+    typedef typename Network::Neuron Neuron;
+    typedef typename Neuron::variable NeuronVariable;
+
     enum parameter
     {
         step,
         time,
+        tolerance,
+        input,
         n_parameters,
     };
 
@@ -24,39 +33,21 @@ public:
         double params[n_parameters];
     };
 
-    std::vector<double> generateVoltages()
+    std::vector<double> generateVoltages(Neuron &n)
     {
         std::vector<double> out;
-        // Struct to initialize neuron model parameters
-        typename Neuron::ConstructorArgs args;
-
-        // Set the parameter values
-        args.params[Neuron::cm] = 1 * 7.854e-3;
-        args.params[Neuron::vna] = 50;
-        args.params[Neuron::vk] = -77;
-        args.params[Neuron::vl] = -54.387;
-        args.params[Neuron::gna] = 120 * 7.854e-3;
-        args.params[Neuron::gk] = 36 * 7.854e-3;
-        args.params[Neuron::gl] = 0.3 * 7.854e-3;
-
-        // Initialize a new neuron model
-        Neuron n(args);
-
-        // You can also initialize the variables of the neuron model to a given value
-        n.set(Neuron::v, -80);
-        n.set(Neuron::m, 0.1);
-        n.set(Neuron::n, 0.7);
-        n.set(Neuron::h, 0.01);
 
         // Set the integration step
         const double step = this->params[parameter::step];
         const double time = this->params[parameter::time];
         const std::size_t nSamples = static_cast<std::size_t>(time / step);
 
-        for (int i = 0; i < nSamples; i++)
+        for (size_t i = 0; i < nSamples; i++)
         {
-            double voltage = n.get(Neuron::v);
+            double voltage = n.get(graphedVariable);
             out.push_back(voltage);
+
+            n.add_synaptic_input(this->params[input]);
 
             n.step(step);
         }
@@ -64,34 +55,51 @@ public:
         return out;
     }
 
-    VoltageDifferenceObjective(ConstructorArgs &args)
+    VoltageDifferenceObjective(ConstructorArgs &args, Neuron &n, NeuronVariable graphedVariable)
     {
         std::copy(args.params, args.params + n_parameters, this->params);
-
-        this->targetVoltages = this->generateVoltages();
+        this->graphedVariable = graphedVariable;
+        this->targetVoltages = this->generateVoltages(n);
     }
 
-    double evaluate(Neuron n)
+    double get_error(std::vector<double> &voltages)
     {
         const double step = this->params[parameter::step];
         const double time = this->params[parameter::time];
         const int nSamples = static_cast<int>(time / step);
 
-        double sqDiff = 0;
+        double score = 0;
         for (int i = 0; i < nSamples; i++)
         {
-            // calculate voltage difference for each point and aggregate in difference
-            double voltage = n.get(Neuron::v);
-            double difference = std::fabs(voltage - this->targetVoltages[i]);
-            sqDiff += difference * difference;
+            double diff = targetVoltages[i] - voltages[i];
+            score += diff * diff;
+        }
+        return score / nSamples;
+    }
+    double evaluate(Network &net)
+    {
+        const double step = this->params[parameter::step];
+        const double time = this->params[parameter::time];
+        const int nSamples = static_cast<int>(time / step);
 
-            n.step(step);
+        std::vector<double> voltages;
+        for (int i = 0; i < nSamples; i++)
+        {
+            // std::cout << targetVoltages[i] << " " << voltages[i] << std::endl;
+            double voltage = net.get_neuron(0)->get(graphedVariable);
+            voltages.push_back(voltage);
+            net.step(step);
         }
 
-        sqDiff /= nSamples;
-        // this line is needed to minimize difference, instead of maximizing it
-        double fitness = 1.0 / (1.0 + sqDiff);
-        return std::max(1e-9, fitness);
+        return std::max(1e-9, 1.0 / (1.0 + get_error(voltages)));
+    }
+
+    void save_voltages(std::ofstream &file)
+    {
+        for (size_t i = 0; i < targetVoltages.size(); i++)
+        {
+            file << i * this->params[step] << " " << targetVoltages[i] << std::endl;
+        }
     }
 
 protected:
@@ -99,6 +107,8 @@ protected:
 
 private:
     std::vector<double> targetVoltages;
+
+    NeuronVariable graphedVariable;
 };
 
 #endif // VOLTAGE_DIFFERENCE_OBJECTIVE_H_

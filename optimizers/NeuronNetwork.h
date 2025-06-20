@@ -12,6 +12,9 @@ public:
     typedef TNeuron Neuron;
     typedef TSynapsis Synapsis;
 
+    typedef typename Neuron::variable NeuronVariable;
+    typedef typename Synapsis::variable SynapsisVariable;
+
 private:
     std::vector<Neuron *> neurons;
     std::vector<Synapsis *> synapses;
@@ -121,7 +124,7 @@ public:
      * @param step size of the simulation steps
      * @param out the ouput stream results are written to
      */
-    void simulate(double simulation_time, double step, std::ostream &out)
+    void simulate(double simulation_time, double step, std::ostream &out, NeuronVariable nv, SynapsisVariable sv)
     {
         for (double time = 0; time < simulation_time; time += step)
         {
@@ -131,11 +134,11 @@ public:
             out << time << " ";
             for (const Neuron *n : neurons)
             {
-                out << n->get(Neuron::v) << " ";
+                out << n->get(nv) << " ";
             }
             for (const Synapsis *s : synapses)
             {
-                out << s->get(Synapsis::i1) << " ";
+                out << s->get(sv) << " ";
             }
             out << std::endl;
         }

@@ -13,6 +13,7 @@ class AmplitudeObjective
 public:
     typedef TNetwork Network;
     typedef typename Network::Neuron Neuron;
+    typedef typename Neuron::variable NeuronVariable;
 
     enum parameter
     {
@@ -33,9 +34,10 @@ public:
         double params[n_parameters];
     };
 
-    AmplitudeObjective(ConstructorArgs &args)
+    AmplitudeObjective(ConstructorArgs &args, NeuronVariable graphedVariable)
     {
         std::copy(args.params, args.params + n_parameters, this->params);
+        this->graphedVariable = graphedVariable;
     }
 
     double get_amplitude_score(std::vector<int> &peaks, std::vector<double> &voltages)
@@ -66,62 +68,6 @@ public:
                              static_cast<double>(params[n_peaks]);
         return std::min(1.0, count_score);
     }
-
-    /*
-    double get_interval_score(std::vector<int> peaks_n1, std::vector<int> peaks_n2)
-    {
-        const double interval = params[parameter::interval];
-        const double step = params[parameter::step];
-        const double tol = params[parameter::int_tolerance];
-        const double sigma = interval * tol;
-
-        if (peaks_n1.empty() || peaks_n2.empty())
-        {
-            return 0.0;
-        }
-
-        double sum = 0.0;
-        int usable_peaks = 0;
-        size_t j;
-
-        // score left peaks of the first neuron
-        j = 0;
-        for (int peak : peaks_n1)
-        {
-            // finds the closest peak from the left
-            while (j + 1 < peaks_n2.size() && peaks_n2[j + 1] <= peak)
-                ++j;
-            // if no peak is found to the left, skip this peak
-            if (peaks_n2[j] > peak)
-                continue;
-
-            usable_peaks++;
-            // find the time interval between current and left peak
-            double diff = peak * step - peaks_n2[j] * step;
-            sum += gaussian_reward(interval, diff, sigma);
-        }
-
-        // score left peaks of the second neuron
-        j = 0;
-        for (int peak : peaks_n2)
-        {
-            // finds the closest peak from the left
-            while (j + 1 < peaks_n1.size() && peaks_n1[j + 1] <= peak)
-                ++j;
-            // if no peak is found to the left, skip this peak
-            if (peaks_n1[j] > peak)
-                continue;
-
-            // find the time interval between current and left peak
-            usable_peaks++;
-            double diff = peak * step - peaks_n1[j] * step;
-            sum += gaussian_reward(interval, diff, sigma);
-        }
-
-        // return the average reward
-        return sum / usable_peaks;
-    }
-    */
 
     double get_interval_score(std::vector<int> peaks_n1, std::vector<int> peaks_n2)
     {
@@ -173,57 +119,6 @@ public:
         return score / (peaks_n2.size() - unused_peaks);
     }
 
-    /*
-    double get_interval_score(std::vector<int> peaks_n1, std::vector<int> peaks_n2)
-    {
-        const double interval = params[parameter::interval];
-        const double step = params[parameter::step];
-        const double tol = params[parameter::int_tolerance];
-        const double sigma = interval * tol;
-
-        if (peaks_n1.empty() || peaks_n2.empty())
-        {
-            return 0.0;
-        }
-
-        size_t j = 0;
-        double score = 0.0;
-        int unused_peaks;
-
-        while (j < peaks_n2.size() && peaks_n2[j] < peaks_n1[0])
-            j++;
-
-        unused_peaks = j;
-
-        for (size_t i = 0; i < peaks_n1.size() - 1; i++)
-        {
-            int peak_n1 = peaks_n1[i];
-
-            while (j < peaks_n2.size() && peaks_n2[j] < peaks_n1[i + 1])
-            {
-                int peak_n2 = peaks_n2[j];
-                double diff = (peak_n2 - peak_n1) * step;
-
-                // std::cout << diff << std::endl;
-                score += gaussian_reward(interval, diff, sigma);
-                j++;
-            }
-        }
-
-        int last_peak = peaks_n1[peaks_n1.size() - 1];
-        while (j < peaks_n2.size())
-        {
-            int peak_n2 = peaks_n2[j];
-            double diff = (peak_n2 - last_peak) * step;
-
-            score += gaussian_reward(interval, diff, sigma);
-            j++;
-        }
-
-        return score / (peaks_n2.size() - unused_peaks);
-    }
-        */
-
     double evaluate(Network n)
     {
         const double step = params[parameter::step];
@@ -238,7 +133,7 @@ public:
             n.step(step);
             for (int j = 0; j < nNeurons; j++)
             {
-                double v = n.get_neuron(j)->get(Neuron::v);
+                double v = n.get_neuron(j)->get(this->graphedVariable);
                 voltages[j][i] = v;
             }
         }
@@ -256,27 +151,24 @@ public:
             amplitude_fitness += get_amplitude_score(peaks[i], voltages[i]);
             count_fitness += get_count_score(peaks[i]);
 
-            /*
-            for (auto p : peaks[i])
+            /*for (auto p : peaks[i])
             {
                 std::cout << p * step << " ";
             }
-            std::cout << std::endl;
-            */
-
-            // std::cout << "quality: " << quality << " count: " << count << std::endl;
+            std::cout << std::endl;*/
         }
         amplitude_fitness /= nNeurons;
         count_fitness /= nNeurons;
         interval_fitness = get_interval_score(peaks[0], peaks[1]);
 
-        std::cout << "amp " << amplitude_fitness << " count " << count_fitness << " int " << interval_fitness << std::endl;
+        // std::cout << "amp " << amplitude_fitness << " count " << count_fitness << " int " << interval_fitness << std::endl;
 
         return (amplitude_fitness + count_fitness + interval_fitness) / 3;
     }
 
 private:
     double params[parameter::n_parameters];
+    NeuronVariable graphedVariable;
 };
 
 #endif // AMPLITUDE_OBJECTIVE_H_

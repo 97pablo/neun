@@ -74,8 +74,8 @@ int main(int argc, char **argv)
     s.step(step);
 
     // Provide an external current input to both neurons
-    // h1.add_synaptic_input(0.5);
-    // h2.add_synaptic_input(0.5);
+    h1.add_synaptic_input(0.5);
+    h2.add_synaptic_input(0.5);
 
     h1.step(step);
     h2.step(step);

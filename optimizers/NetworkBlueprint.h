@@ -3,6 +3,7 @@
 
 #include <DynamicalSystemLimiter.h>
 #include <vector>
+#include <functional>
 #include <ga/GARealGenome.h>
 
 template <typename Network>
@@ -12,11 +13,13 @@ class NetworkBlueprint
 public:
     typedef typename Network::Neuron Neuron;
     typedef typename Network::Synapsis Synapsis;
+    typedef typename Neuron::variable NeuronVariable;
 
     typedef DynamicalSystemLimiter<Neuron> NeuronLimiter;
     typedef DynamicalSystemLimiter<Synapsis> SynapsisLimiter;
 
-    size_t add_neuron(NeuronLimiter limits)
+    size_t
+    add_neuron(NeuronLimiter limits)
     {
         size_t id = neurons.size();
         NeuronBlueprint blueprint;
@@ -24,18 +27,27 @@ public:
         blueprint.limits = limits;
 
         neurons.push_back(blueprint);
+        inputs.emplace_back();
 
         return id;
     }
 
-    void add_synapsis(size_t neuron1, size_t neuron2, SynapsisLimiter limits)
+    void add_synapsis(size_t neuron1, NeuronVariable v1, size_t neuron2, NeuronVariable v2, SynapsisLimiter limits)
     {
         SynapsisBlueprint blueprint;
         blueprint.n1 = neuron1;
         blueprint.n2 = neuron2;
+        blueprint.v1 = v1;
+        blueprint.v2 = v2;
         blueprint.limits = limits;
 
         synapses.push_back(blueprint);
+    }
+
+    int add_synaptic_input(int neuron_id, std::function<double(double, const Network &)> input)
+    {
+        inputs[neuron_id].push_back(input);
+        return inputs.size() - 1;
     }
 
     Network genome_to_network(const GAGenome &genome)
@@ -47,6 +59,12 @@ public:
         {
             Neuron *neuron = genome_to_neuron(realGenome, neuron_idx);
             network.add_neuron(neuron);
+
+            // add inputs to the neuron
+            for (auto input : inputs[neuron_idx])
+            {
+                network.add_synaptic_input(neuron_idx, input);
+            }
         }
 
         for (size_t synapsis_idx = 0; synapsis_idx < synapses.size(); synapsis_idx++)
@@ -84,12 +102,17 @@ private:
     struct SynapsisBlueprint
     {
         size_t n1;
+        NeuronVariable v1;
         size_t n2;
+        NeuronVariable v2;
         SynapsisLimiter limits;
     };
 
     std::vector<NeuronBlueprint> neurons;
     std::vector<SynapsisBlueprint> synapses;
+
+    // inputs are not counted for alleles, but necessary to create networks
+    std::vector<std::vector<std::function<double(double, const Network &)>>> inputs;
 
     const int neuron_size = Neuron::n_parameters + Neuron::n_variables;
     const int synapsis_size = Synapsis::n_parameters + Synapsis::n_variables;
@@ -129,7 +152,7 @@ private:
 
         // this only works for electrical synapsis.
         // There is no common interface for synapsis instanciation
-        Synapsis *synapsis = new Synapsis(*n1, Neuron::v, *n2, Neuron::v,
+        Synapsis *synapsis = new Synapsis(*n1, blueprint.v1, *n2, blueprint.v2,
                                           genome.gene(synapsis_start),
                                           genome.gene(synapsis_start + 1));
 

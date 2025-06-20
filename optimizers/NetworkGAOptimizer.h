@@ -2,7 +2,7 @@
 #ifndef NETWORK_GA_OPTIMIZER_H_
 #define NETWORK_GA_OPTIMIZER_H_
 
-#define PRINT_INTERVAL 10
+#define PRINT_INTERVAL 1
 // this line is needed to compile the real genomes, if removed the code will not compile
 #define INSTANTIATE_REAL_GENOME true
 
@@ -107,18 +107,17 @@ private:
     {
         GAParameterList params;
 
+        GASteadyStateGA::registerDefaultParameters(params);
+
         params.set(gaNpopulationSize, setupParams[parameter::popSize]);
         params.set(gaNpCrossover, setupParams[parameter::pCross]);
         params.set(gaNpMutation, setupParams[parameter::pMut]);
         params.set(gaNnGenerations, setupParams[parameter::nGens]);
 
         // avoids unnecessary writes to the console
-        params.set(gaNscoreFrequency, 0);
-        params.set(gaNflushFrequency, 0);
-
+        params.set(gaNscoreFrequency, 1);
+        params.set(gaNflushFrequency, 1);
         params.set(gaNselectScores, (int)GAStatistics::AllScores);
-
-        GASteadyStateGA::registerDefaultParameters(params);
 
         return params;
     }
